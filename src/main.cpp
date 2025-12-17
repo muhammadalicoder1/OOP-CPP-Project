@@ -1,5 +1,7 @@
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+
+using namespace std;
 
 // Module A: Mathematical Core
 #include "Tensor.h"
@@ -22,163 +24,173 @@
 #include "LogisticRegression.h"
 #include "Evaluation.h"
 
-int main() {
-    std::cout << "\n";
-    std::cout << "======================================================" << std::endl;
-    std::cout << "    TITAN-LEARN: C++ LOGISTIC REGRESSION ENGINE      " << std::endl;
-    std::cout << "======================================================" << std::endl;
-    std::cout << "University of Central Punjab - Fall 2025 Term Project" << std::endl;
-    std::cout << "======================================================\n" << std::endl;
-    
-    try {
+int main()
+{
+    cout << "\n";
+    cout << "======================================================" << endl;
+    cout << "    TITAN-LEARN: C++ LOGISTIC REGRESSION ENGINE      " << endl;
+    cout << "======================================================" << endl;
+    cout << "University of Central Punjab - Fall 2025 Term Project" << endl;
+    cout << "======================================================\n"
+         << endl;
+
+    try
+    {
         // ==================== STEP 1: Load Dataset ====================
-        std::cout << "STEP 1: Loading Dataset..." << std::endl;
-        std::cout << "----------------------------------------------------" << std::endl;
-        
+        cout << "STEP 1: Loading Dataset..." << endl;
+        cout << "----------------------------------------------------" << endl;
+
         Dataset dataset;
-        if (!dataset.loadCSV("../data/sample_data.csv")) {
+        if (!dataset.loadCSV("../data/sample_data.csv"))
+        {
             // Try alternate path
-            if (!dataset.loadCSV("data/sample_data.csv")) {
-                std::cerr << "Failed to load dataset. Please check the file path." << std::endl;
+            if (!dataset.loadCSV("data/sample_data.csv"))
+            {
+                cerr << "Failed to load dataset. Please check the file path." << endl;
                 return 1;
             }
         }
-        
+
         dataset.displayInfo();
         dataset.displayHead(5);
-        
+
         // ==================== STEP 2: Statistical Analysis ====================
-        std::cout << "\nSTEP 2: Performing Statistical Analysis..." << std::endl;
-        std::cout << "----------------------------------------------------" << std::endl;
-        
+        cout << "\nSTEP 2: Performing Statistical Analysis..." << endl;
+        cout << "----------------------------------------------------" << endl;
+
         DataSummary summary;
         Matrix features = dataset.getFeatures();
         summary.generateReport(features);
-        
+
         // ==================== STEP 3: Feature Scaling ====================
-        std::cout << "\nSTEP 3: Scaling Features..." << std::endl;
-        std::cout << "----------------------------------------------------" << std::endl;
-        
+        cout << "\nSTEP 3: Scaling Features..." << endl;
+        cout << "----------------------------------------------------" << endl;
+
         MinMaxScaler scaler;
         scaler.fit(features);
         Matrix scaledFeatures = scaler.transform(features);
-        
-        std::cout << "Features scaled to range [0, 1]" << std::endl;
-        std::cout << "First 3 rows of scaled data:" << std::endl;
-        for (int i = 0; i < std::min(3, scaledFeatures.getRows()); i++) {
-            std::cout << "Row " << i << ": ";
-            for (int j = 0; j < scaledFeatures.getCols(); j++) {
-                std::cout << std::fixed << std::setprecision(4) 
-                          << scaledFeatures.getValue(i, j) << " ";
+
+        cout << "Features scaled to range [0, 1]" << endl;
+        cout << "First 3 rows of scaled data:" << endl;
+        for (int i = 0; i < min(3, scaledFeatures.getRows()); i++)
+        {
+            cout << "Row " << i << ": ";
+            for (int j = 0; j < scaledFeatures.getCols(); j++)
+            {
+                cout << fixed << setprecision(4)
+                     << scaledFeatures.getValue(i, j) << " ";
             }
-            std::cout << std::endl;
+            cout << endl;
         }
-        std::cout << std::endl;
-        
+        cout << endl;
+
         // ==================== STEP 4: Split Data (Simple Approach) ====================
-        std::cout << "\nSTEP 4: Preparing Training Data..." << std::endl;
-        std::cout << "----------------------------------------------------" << std::endl;
-        
+        cout << "\nSTEP 4: Preparing Training Data..." << endl;
+        cout << "----------------------------------------------------" << endl;
+
         // For this demo, we'll use the entire dataset for training
         // In practice, you would split into train/test sets
         Matrix X_train = scaledFeatures;
         Vector y_train = dataset.getLabels();
-        
-        std::cout << "Training samples: " << X_train.getRows() << std::endl;
-        std::cout << "Features: " << X_train.getCols() << std::endl;
-        std::cout << std::endl;
-        
+
+        cout << "Training samples: " << X_train.getRows() << endl;
+        cout << "Features: " << X_train.getCols() << endl;
+        cout << endl;
+
         // ==================== STEP 5: Train Model ====================
-        std::cout << "\nSTEP 5: Training Logistic Regression Model..." << std::endl;
-        std::cout << "----------------------------------------------------" << std::endl;
-        
-        LogisticRegression model(0.1, 500);  // learning rate = 0.1, epochs = 500
+        cout << "\nSTEP 5: Training Logistic Regression Model..." << endl;
+        cout << "----------------------------------------------------" << endl;
+
+        LogisticRegression model(0.1, 500); // learning rate = 0.1, epochs = 500
         model.train(X_train, y_train);
-        
+
         // ==================== STEP 6: Make Predictions ====================
-        std::cout << "\nSTEP 6: Making Predictions..." << std::endl;
-        std::cout << "----------------------------------------------------" << std::endl;
-        
+        cout << "\nSTEP 6: Making Predictions..." << endl;
+        cout << "----------------------------------------------------" << endl;
+
         Vector predictions = model.predict(X_train);
-        
-        std::cout << "Predictions completed!" << std::endl;
-        std::cout << "First 10 predictions vs actual:" << std::endl;
-        for (int i = 0; i < std::min(10, predictions.getSize()); i++) {
-            std::cout << "Sample " << i << ": Predicted = " << predictions[i] 
-                      << ", Actual = " << y_train[i] << std::endl;
+
+        cout << "Predictions completed!" << endl;
+        cout << "First 10 predictions vs actual:" << endl;
+        for (int i = 0; i < min(10, predictions.getSize()); i++)
+        {
+            cout << "Sample " << i << ": Predicted = " << predictions[i]
+                 << ", Actual = " << y_train[i] << endl;
         }
-        std::cout << std::endl;
-        
+        cout << endl;
+
         // ==================== STEP 7: Evaluate Model ====================
-        std::cout << "\nSTEP 7: Evaluating Model Performance..." << std::endl;
-        std::cout << "----------------------------------------------------" << std::endl;
-        
+        cout << "\nSTEP 7: Evaluating Model Performance..." << endl;
+        cout << "----------------------------------------------------" << endl;
+
         double accuracy = Evaluation::calculateAccuracy(predictions, y_train);
         double precision = Evaluation::calculatePrecision(predictions, y_train);
         double recall = Evaluation::calculateRecall(predictions, y_train);
         double f1Score = Evaluation::calculateF1Score(predictions, y_train);
-        
-        std::cout << "\n========== MODEL PERFORMANCE METRICS ==========" << std::endl;
-        std::cout << std::fixed << std::setprecision(4);
-        std::cout << "Accuracy:  " << (accuracy * 100) << "%" << std::endl;
-        std::cout << "Precision: " << (precision * 100) << "%" << std::endl;
-        std::cout << "Recall:    " << (recall * 100) << "%" << std::endl;
-        std::cout << "F1 Score:  " << (f1Score * 100) << "%" << std::endl;
-        std::cout << "===============================================" << std::endl;
-        
+
+        cout << "\n========== MODEL PERFORMANCE METRICS ==========" << endl;
+        cout << fixed << setprecision(4);
+        cout << "Accuracy:  " << (accuracy * 100) << "%" << endl;
+        cout << "Precision: " << (precision * 100) << "%" << endl;
+        cout << "Recall:    " << (recall * 100) << "%" << endl;
+        cout << "F1 Score:  " << (f1Score * 100) << "%" << endl;
+        cout << "===============================================" << endl;
+
         Evaluation::displayConfusionMatrix(predictions, y_train);
-        
+
         // ==================== STEP 8: Analyze Model ====================
-        std::cout << "\nSTEP 8: Model Analysis (Using Friend Function)..." << std::endl;
-        std::cout << "----------------------------------------------------" << std::endl;
-        
+        cout << "\nSTEP 8: Model Analysis (Using Friend Function)..." << endl;
+        cout << "----------------------------------------------------" << endl;
+
         Evaluation::analyzeModel(model);
-        
+
         // ==================== DEMONSTRATION OF OOP CONCEPTS ====================
-        std::cout << "\n======================================================" << std::endl;
-        std::cout << "    OOP CONCEPTS DEMONSTRATED IN THIS PROJECT        " << std::endl;
-        std::cout << "======================================================" << std::endl;
-        std::cout << "\n1. ENCAPSULATION:" << std::endl;
-        std::cout << "   - Private data members in Tensor, Matrix, Vector" << std::endl;
-        std::cout << "   - Controlled access via getters/setters" << std::endl;
-        std::cout << "   - Private weights in LogisticRegression" << std::endl;
-        
-        std::cout << "\n2. OPERATOR OVERLOADING:" << std::endl;
-        std::cout << "   - Matrix +, -, * operators" << std::endl;
-        std::cout << "   - Stream insertion operator <<" << std::endl;
-        std::cout << "   - Vector [] operator for element access" << std::endl;
-        
-        std::cout << "\n3. DEEP COPYING:" << std::endl;
-        std::cout << "   - Custom copy constructor in Tensor" << std::endl;
-        std::cout << "   - Assignment operator overloading" << std::endl;
-        std::cout << "   - Proper memory management" << std::endl;
-        
-        std::cout << "\n4. POLYMORPHISM:" << std::endl;
-        std::cout << "   - Dynamic: Model interface (train, predict)" << std::endl;
-        std::cout << "   - Static: Constructor overloading in Vector" << std::endl;
-        std::cout << "   - Virtual method dispatch" << std::endl;
-        
-        std::cout << "\n5. INHERITANCE:" << std::endl;
-        std::cout << "   - Multi-level: Vector -> Tensor" << std::endl;
-        std::cout << "   - Multiple: DataSummary -> CentralTendency + Dispersion" << std::endl;
-        std::cout << "   - Single: LogisticRegression -> Model" << std::endl;
-        
-        std::cout << "\n6. VIRTUAL INHERITANCE:" << std::endl;
-        std::cout << "   - Solving Diamond Problem in DataSummary" << std::endl;
-        std::cout << "   - Only one StatisticalTool base instance" << std::endl;
-        
-        std::cout << "\n7. FRIEND FUNCTIONS:" << std::endl;
-        std::cout << "   - Evaluation class accesses private LogisticRegression members" << std::endl;
-        std::cout << "   - Controlled violation of encapsulation" << std::endl;
-        
-        std::cout << "\n======================================================" << std::endl;
-        std::cout << "          PROJECT COMPLETED SUCCESSFULLY!             " << std::endl;
-        std::cout << "======================================================\n" << std::endl;
-        
-    } catch (const std::exception& e) {
-        std::cerr << "\nError: " << e.what() << std::endl;
+        cout << "\n======================================================" << endl;
+        cout << "    OOP CONCEPTS DEMONSTRATED IN THIS PROJECT        " << endl;
+        cout << "======================================================" << endl;
+        cout << "\n1. ENCAPSULATION:" << endl;
+        cout << "   - Private data members in Tensor, Matrix, Vector" << endl;
+        cout << "   - Controlled access via getters/setters" << endl;
+        cout << "   - Private weights in LogisticRegression" << endl;
+
+        cout << "\n2. OPERATOR OVERLOADING:" << endl;
+        cout << "   - Matrix +, -, * operators" << endl;
+        cout << "   - Stream insertion operator <<" << endl;
+        cout << "   - Vector [] operator for element access" << endl;
+
+        cout << "\n3. DEEP COPYING:" << endl;
+        cout << "   - Custom copy constructor in Tensor" << endl;
+        cout << "   - Assignment operator overloading" << endl;
+        cout << "   - Proper memory management" << endl;
+
+        cout << "\n4. POLYMORPHISM:" << endl;
+        cout << "   - Dynamic: Model interface (train, predict)" << endl;
+        cout << "   - Static: Constructor overloading in Vector" << endl;
+        cout << "   - Virtual method dispatch" << endl;
+
+        cout << "\n5. INHERITANCE:" << endl;
+        cout << "   - Multi-level: Vector -> Tensor" << endl;
+        cout << "   - Multiple: DataSummary -> CentralTendency + Dispersion" << endl;
+        cout << "   - Single: LogisticRegression -> Model" << endl;
+
+        cout << "\n6. VIRTUAL INHERITANCE:" << endl;
+        cout << "   - Solving Diamond Problem in DataSummary" << endl;
+        cout << "   - Only one StatisticalTool base instance" << endl;
+
+        cout << "\n7. FRIEND FUNCTIONS:" << endl;
+        cout << "   - Evaluation class accesses private LogisticRegression members" << endl;
+        cout << "   - Controlled violation of encapsulation" << endl;
+
+        cout << "\n======================================================" << endl;
+        cout << "          PROJECT COMPLETED SUCCESSFULLY!             " << endl;
+        cout << "======================================================\n"
+             << endl;
+    }
+    catch (const exception &e)
+    {
+        cerr << "\nError: " << e.what() << endl;
         return 1;
     }
-    
+
     return 0;
 }
